@@ -50,3 +50,19 @@ navbar:
       href: https://github.com/aravind-j/dormancymetrics
 search:
   exclude: news/index.html
+
+reference:
+    - title: Logistic function
+      contents:
+         - '`FourPL1`'
+         - '`FourPL2`'
+
+    - title: Log-logistic function
+      contents:
+         - '`FourPLL1`'
+         - '`FourPLL2`'
+
+    - title: Curve fitting
+      contents:
+         - '`FourPLfit`'
+         - '`plot.FourPLfit`'
