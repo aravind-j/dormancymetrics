@@ -64,7 +64,9 @@
 #'                     inflection.point = "implicit", time.scale = "log")
 #'
 #' plot(fitLL1)
+#' plot(fitLL1, x.axis.scale = "log")
 #' plot(fitLL2)
+#' plot(fitLL2, x.axis.scale = "log")
 #'
 
 plot.FourPLfit <- function(x, rdr = TRUE,
@@ -154,21 +156,21 @@ plot.FourPLfit <- function(x, rdr = TRUE,
 
       if (time.scale == "linear") {
         if (inflection.point == "explicit") {
-          range_dfgp <- range(FourPL1_deriv(x = int, y0 = y0, a = a,
+          range_dfgp <- range(FourPL1_deriv(x = df$intervals, y0 = y0, a = a,
                                             b = b, c = c), na.rm = TRUE)
         }
         if (inflection.point == "implicit") {
-          range_dfgp <- range(FourPL2_deriv(x = int, y0 = y0, a = a,
+          range_dfgp <- range(FourPL2_deriv(x = df$intervals, y0 = y0, a = a,
                                             b = b, k = k), na.rm = TRUE)
         }
       }
       if (time.scale == "log") {
         if (inflection.point == "explicit") {
-          range_dfgp <- range(FourPLL1_deriv(x = int, y0 = y0, a = a,
+          range_dfgp <- range(FourPLL1_deriv(x = df$intervals, y0 = y0, a = a,
                                              b = b, c = c), na.rm = TRUE)
         }
         if (inflection.point == "implicit") {
-          range_dfgp <- range(FourPLL2_deriv(x = int, y0 = y0, a = a,
+          range_dfgp <- range(FourPLL2_deriv(x = df$intervals, y0 = y0, a = a,
                                              b = b, k = k), na.rm = TRUE)
         }
       }
