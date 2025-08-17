@@ -151,7 +151,7 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
                       fix.y0 = TRUE, fix.a = TRUE,
                       inflection.point = c("explicit", "implicit"),
                       time.scale = c("linear", "log"),
-                      tmax = max(int), tries = 3) {
+                      tmax = max(intervals), tries = 3) {
 
   # Checks ----
 
@@ -276,17 +276,17 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
       if (inflection.point == "explicit") {
 
         # Rough Inflection point estimate
-        # int where gp ≈ midpoint
-        index_closest <- which.min(abs(int - gp_mid))
-        startc <- int[index_closest]
+        # intervals where gp ≈ midpoint
+        index_closest <- which.min(abs(intervals - gp_mid))
+        startc <- intervals[index_closest]
 
         # Rough estimate of b
         # By linear approximation of logit
-        logit_gp <- log((int - starty0) / (starta - gp))
-        dt <- data.frame(int, logit_gp)
+        logit_gp <- log((intervals - starty0) / (starta - gp))
+        dt <- data.frame(intervals, logit_gp)
         dt <- dt[is.finite(dt$logit_gp), ]
         if (nrow(dt) >= 2) {
-          b_model <- lm(logit_gp ~ int, data = dt)
+          b_model <- lm(logit_gp ~ intervals, data = dt)
         }
         startb <- coef(b_model)[2]
 
@@ -297,11 +297,11 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
         epsilon <- 1e-8
         fraction <- ((starta - starty0) / (gp - starty0 + + epsilon))
         z <- log(pmax(fraction - 1, epsilon))
-        dt <- data.frame(int, z)
+        dt <- data.frame(intervals, z)
 
         # Linear regression to estimate log(k) and startb
         if (nrow(dt) >= 2) {
-          b_model <- lm(z ~ int, data = dt)
+          b_model <- lm(z ~ intervals, data = dt)
         }
         log_k <- coef(b_model)[1]
         startb <- -coef(b_model)[2]
@@ -311,9 +311,9 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
     }
     if (time.scale == "log") {
 
-      # Remove int = 0
-      nonzero_indices <- int > 0
-      int_nz <- int[nonzero_indices]
+      # Remove intervals = 0
+      nonzero_indices <- intervals > 0
+      int_nz <- intervals[nonzero_indices]
       gp_nz <- gp[nonzero_indices]
 
       starty0 <- min(gp_nz)
@@ -321,16 +321,16 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
       gp_mid <- (starty0 + starta) / 2
 
       # Rough Inflection point estimate
-      # int where gp ≈ midpoint
+      # intervals where gp ≈ midpoint
       index_closest <- which.min(abs(gp_nz - gp_mid))
       startc <- int_nz[index_closest]
 
       # Estimate b in log space
       logit_gp <- log((gp_nz - starty0) / (starta - gp_nz))
-      dt <- data.frame(int = log(int_nz), logit_gp = logit_gp)
+      dt <- data.frame(intervals = log(int_nz), logit_gp = logit_gp)
       dt <- dt[is.finite(dt$logit_gp), ]
       if (nrow(dt) >= 2) {
-        b_model <- lm(logit_gp ~ int, data = dt)
+        b_model <- lm(logit_gp ~ intervals, data = dt)
       }
       startb <- coef(b_model)[2]
 
