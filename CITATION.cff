@@ -1,0 +1,39 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: 'To cite package "dormancymetrics" in publications use:'
+type: software
+license:
+- GPL-2.0-only
+- GPL-3.0-only
+title: 'dormancymetrics: Curve Fitting for Seed Dormancy Release'
+version: 0.1.0
+abstract: More about what it does (maybe more than one line). Continuation lines should
+  be indented.
+authors:
+- family-names: Aravind
+  given-names: J.
+  email: j.aravind@icar.gov.in
+  orcid: https://orcid.org/0000-0002-4791-442X
+- family-names: Vijay
+  given-names: D.
+  email: dunna.vijay@icar.gov.in
+- family-names: Manjunath Prasad
+  given-names: C. T.
+  email: manjunath_sst@iari.res.in
+  orcid: https://orcid.org/0000-0001-9363-4915
+- family-names: Roy
+  given-names: Suman
+  email: suman.roy@icar.gov.in
+  orcid: https://orcid.org/0000-0001-5612-8415
+repository-code: https://github.com/aravind-j/dormancymetrics
+url: https://aravind-j.github.io/dormancymetrics/
+contact:
+- family-names: Aravind
+  given-names: J.
+  email: j.aravind@icar.gov.in
+  orcid: https://orcid.org/0000-0002-4791-442X
+

@@ -1,0 +1,65 @@
+Package: dormancymetrics
+Type: Package
+Title: Curve Fitting for Seed Dormancy Release
+Version: 0.0.0.9000
+Authors@R: c(
+    person(given = "J.", family = "Aravind",
+           email = "j.aravind@icar.org.in",
+           role = c("aut", "cre"),
+		       comment = c(ORCID = "0000-0002-4791-442X")),
+	  person(given = "D.", family = "Vijay",
+           email = "dunna.vijay@icar.org.in",
+           role = c("aut")),
+		person(given = "C. T.", family = "Manjunath Prasad",
+           email = "manjunath_sst@iari.res.in",
+           role = c("aut"),
+		       comment = c(ORCID = "0000-0001-9363-4915")),
+    person(given = "Suman", family = "Roy",
+           email = "suman.roy@icar.org.in",
+           role = c("aut"),
+		       comment = c(ORCID = "0000-0001-5612-8415")),
+		person("ICAR-NBGPR",
+           role = c("cph"),
+		       comment = c(url = "www.nbpgr.org.in")))
+Description: Provides functions to fit non-linear regression curves such as 
+    logistic (Bentsink et al. 2010 <doi:10.1073/pnas.1000410107> and 2011 
+    <doi:bentsink_identification_2011>, Postma et al. 2015
+    <doi:10.1111/mec.13061>) and log-logistic models (Fogliatto et al. 2020 
+    <doi:10.1080/11263504.2019.1578282>) to germination count data recorded at 
+    sequential time intervals of seed storage. Facilitates estimation of key 
+    parameters such as days of seed dry storage required to reach 50% 
+    germination and rate of dormancy release.
+License: GPL-2 | GPL-3
+URL: https://github.com/aravind-j/dormancymetrics,
+    https://aravind-j.github.io/dormancymetrics/
+BugReports: https://github.com/aravind-j/dormancymetrics/issues
+Imports:
+    broom,
+    data.table,
+    ggplot2,
+    ggrepel,
+    gslnls,
+    mathjaxr,
+    plyr,
+    Rdpack,
+    scales,
+    stats,
+    utils
+Suggests:
+    httr,
+    knitr,
+    pander,
+    RCurl,
+    reshape2,
+    rmarkdown,
+    testthat (>= 3.0.0),
+    XML
+VignetteBuilder: 
+    knitr
+RdMacros:
+    mathjaxr,
+    Rdpack
+Copyright: 2025-2026, ICAR-NBPGR
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.3.2
