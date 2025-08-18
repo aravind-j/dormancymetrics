@@ -1,13 +1,14 @@
 template:
   bootstrap: 5
   light-switch: yes
+  math-rendering: mathjax
   bslib:
     base_font:
-      google: Fira Sans
+      google: Oxygen
     heading_font:
-      google: Fira Sans
+      google: Oxygen
     code_font:
-      google: Fira Mono
+      google: Oxygen Mono
     primary: "#009ce2" # (translucent) hover colour in the navbar and sidebar
     pkgdown-navbar-bg: "#005cdf" # Background colur of navbar
     navbar-light-color: "#f7ebff" # Navbar text colour of items
