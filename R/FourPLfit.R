@@ -23,7 +23,9 @@
 #' time between initial germination value and maximum germination), and
 #' \mjseqn{c} is the inflection point which represents the time point of storage
 #' with maximum rate of dormancy release. \mjseqn{c} is the \mjseqn{DSDS_{50}}
-#' (days of seed dry storage required to reach 50\% germination).
+#' (days of seed dry storage required to reach 50\% germination). It is also
+#' described as the depth of dormancy or \mjseqn{AR_{50}} (dry after-ripening
+#' time required to achieve 50\% germination).
 #'
 #' This model has the inflection point \mjseqn{c} explicitly included.
 #' Alternatively the data can also be modelled to fit a four-parameter logistic
@@ -37,7 +39,7 @@
 #' is the asymmetry or horizontal shift factor which affects where the curve
 #' reaches its inflection point and introduces asymmetry.
 #'
-#' \mjsdeqn{k = e^{bc} \; \textrm{and} \; c = \frac{\ln{k}}{b}}
+#' \mjsdeqn{k = e^{-bc} \; \textrm{and} \; c = -\frac{\ln{k}}{b}}
 #'
 #' This is useful in cases where more than 50\% germination is achieved in the
 #' first time interval itself.
@@ -277,20 +279,22 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
 
         # Rough Inflection point estimate
         # intervals where gp ≈ midpoint
-        index_closest <- which.min(abs(intervals - gp_mid))
+        index_closest <- which.min(abs(gp - gp_mid))
         startc <- intervals[index_closest]
 
         # Rough estimate of b
         # By linear approximation of logit
-        logit_gp <- log((intervals - starty0) / (starta - gp))
+        logit_gp <- log((gp - starty0) / (starta - gp))
         dt <- data.frame(intervals, logit_gp)
         dt <- dt[is.finite(dt$logit_gp), ]
         if (nrow(dt) >= 2) {
           b_model <- lm(logit_gp ~ intervals, data = dt)
+          startb <- coef(b_model)[2]
+        } else {
+          startb <- 0.00001
         }
-        startb <- coef(b_model)[2]
-
       }
+
       if (inflection.point == "implicit") {
 
         # Transform response gp
@@ -302,11 +306,13 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
         # Linear regression to estimate log(k) and startb
         if (nrow(dt) >= 2) {
           b_model <- lm(z ~ intervals, data = dt)
+          log_k <- coef(b_model)[1]
+          startb <- -coef(b_model)[2]
+          startk <- exp(log_k)
+        } else {
+          startb <- 0.00001
+          startk <- exp(startb * 0.00001)
         }
-        log_k <- coef(b_model)[1]
-        startb <- -coef(b_model)[2]
-        startk <- exp(log_k)
-
       }
     }
     if (time.scale == "log") {
@@ -331,8 +337,10 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
       dt <- dt[is.finite(dt$logit_gp), ]
       if (nrow(dt) >= 2) {
         b_model <- lm(logit_gp ~ intervals, data = dt)
+        startb <- coef(b_model)[2]
+      } else {
+        startb <- 0.00001
       }
-      startb <- coef(b_model)[2]
 
       # if (time.scale == "linear") {
       # }
@@ -342,6 +350,13 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
         int_mid <- startc
         startb <- startb
         startk <- int_mid ^ startb
+
+        cond <-  mean(df[df$intervals == min(df$intervals), ]$gp) >=
+          0.95 * max(df$gp)
+        if (cond) {
+          startb <- 5
+          startk <- 10
+        }
 
       }
     }
@@ -354,14 +369,100 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
     tryStart <-
       FourPL_withWE(data = df,
                     fix.a = fix.a, fix.y0 = fix.y0,
-                    starta = starta, startb = startbta,
+                    starta = starta, startbta = startbta,
                     startc = startc, startk = startk,
                     starty0 = starty0,
                     maxiter = 1024, inflection.point = inflection.point,
                     time.scale = time.scale)
+    # To check for singular gradient matrix as in gsl_nls only a warning is
+    # shown instead of an error in gsl_nls and minpack.lm
+    tryStart_summ <-  tryCatch(summary(tryStart),
+                               error = function(e) e)
 
-    ### Test with grid ----
+    # Test grid of starting values
+    if (inherits(tryStart, "error") |
+        inherits(tryStart_summ, "error")) {
+      cunit <- min(setdiff(diff(intervals), 0))
 
+      startgrid <-
+        expand.grid(starta = starta,
+                    startb = c(0.0000001, 2, 5,
+                               seq(from = 10, to = 100, by = 10)),
+                    startc = c(0.0000001,
+                               seq(from = startc - (cunit * 5),
+                                   to = startc + (cunit * 5),
+                                   by = cunit/10)),
+                    starty0 = starty0)
+      startgrid$sl <- 1:nrow(startgrid)
+      startgrid$startbta <- log(startgrid$startb, base = exp(1))
+
+      nls_fitlist <- vector("list", nrow(startgrid))
+
+      for (i in 1:nrow(startgrid)) {
+
+        nls_fitlist[[i]] <-
+          FourPL_withWE(data = df,
+                        fix.a = fix.a, fix.y0 = fix.y0,
+                        starta = startgrid[i, "starta"],
+                        startbta = startgrid[i, "startbta"],
+                        startc = startgrid[i, "startc"],
+                        starty0 = startgrid[i, "starty0"], maxiter = 1024,
+                        inflection.point = inflection.point,
+                        time.scale = time.scale)
+      }
+
+      isnls <- unlist(lapply(nls_fitlist, function(x) is(x, "nls")))
+
+      # Workaround for gls_nls summary error
+      # when there is singular gradient matrix at parameter estimates
+      isnlssumm <- unlist(lapply(nls_fitlist, function(x) {
+        out <- tryCatch(summary(x), error = function(e) e)
+        inherits(out, "error")
+      }))
+
+      isnls <- isnls & (!isnlssumm)
+
+      if (any(isnls)) {
+        nls_fitlist <- nls_fitlist[isnls]
+
+        nls_fitdf <-
+          lapply(nls_fitlist, function(x) {
+            cdf <- data.frame(t(coef(x)))
+            colnames(cdf) <- paste("start", colnames(cdf), sep = "")
+            sgm <- tryCatch(chol2inv(x$m$Rmat()), error = function(e) e)
+            is.sgm <- inherits(sgm, "error")
+            cbind(cdf, broom::glance(x), is.sgm)
+            # cbind(cdf, broom::glance(x))
+          })
+
+        nls_fitdf <- do.call(rbind, nls_fitdf)
+        # nls_fitlist <- nls_fitlist[nls_fitdf$isConv]
+        # startgrid <- startgrid[isnls, ][nls_fitdf$isConv == TRUE, ]
+        nls_fitdf <- nls_fitdf[nls_fitdf$isConv == TRUE, ]
+        sel_ind <- which.min(nls_fitdf$deviance)
+
+        starta <- ifelse("starta" %in% colnames(nls_fitdf),
+                         nls_fitdf[sel_ind, "starta"],
+                         starta)
+        startbta <- ifelse("startbta" %in% colnames(nls_fitdf),
+                           nls_fitdf[sel_ind, "startbta"],
+                           startbta)
+        if (exists("startc")) {
+          startc <- ifelse("startc" %in% colnames(nls_fitdf),
+                           nls_fitdf[sel_ind, "startc"],
+                           startc)
+        }
+        if (exists("startk")) {
+          startk <- ifelse("startk" %in% colnames(nls_fitdf),
+                           nls_fitdf[sel_ind, "startk"],
+                           startk)
+        }
+        starty0 <- ifelse("starty0" %in% colnames(nls_fitdf),
+                          nls_fitdf[sel_ind, "starty0"],
+                          starty0)
+      }
+
+    }
 
     # Fit the model - using gsl_nls ----
     ## With tries ----
@@ -373,7 +474,7 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
       possibleError <-
         FourPL_withWE(data = df,
                       fix.a = fix.a, fix.y0 = fix.y0,
-                      starta = starta, startb = startbta,
+                      starta = starta, startbta = startbta,
                       startc = startc, startk = startk,
                       starty0 = starty0,
                       maxiter = 1024, inflection.point = inflection.point,
@@ -397,7 +498,7 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
         mod <-
           FourPL_withWE(data = df,
                         fix.a = fix.a, fix.y0 = fix.y0,
-                        starta = starta, startb = startbta,
+                        starta = starta, startbta = startbta,
                         startc = startc, , startk = startk,
                         starty0 = starty0,
                         maxiter = 1024, warnOnly = TRUE,
@@ -434,10 +535,73 @@ FourPLfit <- function(germ.counts, intervals, rep, total.seeds,
     # "exceeded max number of iterations"
     if (mod$convInfo$stopCode == 11) {
 
+      starta <- ifelse(is.na(coef(mod)["a"]),
+                       starta,
+                       coef(mod)["a"])
+      startbta <- ifelse(is.na(coef(mod)["bta"]),
+                         startbta,
+                         coef(mod)["bta"])
+      if (exists("startc")) {
+        startc <- ifelse(is.na(coef(mod)["c"]),
+                         startc,
+                         coef(mod)["c"])
+      }
+      if (exists("startk")) {
+        startk <- ifelse(is.na(coef(mod)["k"]),
+                         startk,
+                         coef(mod)["k"])
+      }
+      starty0 <- ifelse(is.na(coef(mod)["y0"]),
+                        starty0,
+                        coef(mod)["y0"])
+
+      mod <- FourPL_withWE(data = df,
+                            fix.a = fix.a, fix.y0 = fix.y0,
+                            starta = starta, startbta = startbta,
+                            startc = startc, startk = startk,
+                            starty0 = starty0,
+                            maxiter = 2048, algorithm = "lm",
+                            inflection.point = inflection.point,
+                            time.scale = time.scale)
+      i = i + 1
+      msg <- paste(msg, "\n#", i, ". ", mod$convInfo$stopMessage,
+                   " ", sep = "")
     }
 
     # "iteration is not making progress towards solution"
     if (mod$convInfo$stopCode == 27) {
+
+      starta <- ifelse(is.na(coef(mod)["a"]),
+                       starta,
+                       coef(mod)["a"])
+      startbta <- ifelse(is.na(coef(mod)["bta"]),
+                         startbta,
+                         coef(mod)["bta"])
+      if (exists("startc")) {
+        startc <- ifelse(is.na(coef(mod)["c"]),
+                         startc,
+                         coef(mod)["c"])
+      }
+      if (exists("startk")) {
+        startk <- ifelse(is.na(coef(mod)["k"]),
+                         startk,
+                         coef(mod)["k"])
+      }
+      starty0 <- ifelse(is.na(coef(mod)["y0"]),
+                        starty0,
+                        coef(mod)["y0"])
+
+      mod <- FourPL_withWE(data = df,
+                            fix.a = fix.a, fix.y0 = fix.y0,
+                            starta = starta, startbta = startbta,
+                            startc = startc, startk = startk,
+                            starty0 = starty0,
+                            maxiter = 2048, algorithm = "lmaccel",
+                            inflection.point = inflection.point,
+                            time.scale = time.scale)
+      i = i + 1
+      msg <- paste(msg, "\n#", i, ". ", mod$convInfo$stopMessage,
+                   " ", sep = "")
     }
 
     # Prepare output ----

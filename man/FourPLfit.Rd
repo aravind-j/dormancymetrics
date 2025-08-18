@@ -13,7 +13,7 @@ FourPLfit(
   fix.a = TRUE,
   inflection.point = c("explicit", "implicit"),
   time.scale = c("linear", "log"),
-  tmax = max(int),
+  tmax = max(intervals),
   tries = 3
 )
 }
@@ -86,7 +86,9 @@ the steeper the rise toward the asymptote \mjseqn{a}, and the shorter the
 time between initial germination value and maximum germination), and
 \mjseqn{c} is the inflection point which represents the time point of storage
 with maximum rate of dormancy release. \mjseqn{c} is the \mjseqn{DSDS_{50}}
-(days of seed dry storage required to reach 50\% germination).
+(days of seed dry storage required to reach 50\% germination). It is also
+described as the depth of dormancy or \mjseqn{AR_{50}} (dry after-ripening
+time required to achieve 50\% germination).
 
 This model has the inflection point \mjseqn{c} explicitly included.
 Alternatively the data can also be modelled to fit a four-parameter logistic
@@ -100,7 +102,7 @@ Where, \mjseqn{k} controls the initial value of the function at \mjseqn{x =
 is the asymmetry or horizontal shift factor which affects where the curve
 reaches its inflection point and introduces asymmetry.
 
-\mjsdeqn{k = e^{bc} \; \textrm{and} \; c = \frac{\ln{k}}{b}}
+\mjsdeqn{k = e^{-bc} \; \textrm{and} \; c = -\frac{\ln{k}}{b}}
 
 This is useful in cases where more than 50\% germination is achieved in the
 first time interval itself.
