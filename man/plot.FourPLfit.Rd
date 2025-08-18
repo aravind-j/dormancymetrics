@@ -81,7 +81,9 @@ fitLL2 <- FourPLfit(germ.counts = y, intervals = int, rep = rep,
                     inflection.point = "implicit", time.scale = "log")
 
 plot(fitLL1)
+plot(fitLL1, x.axis.scale = "log")
 plot(fitLL2)
+plot(fitLL2, x.axis.scale = "log")
 
 }
 \seealso{
