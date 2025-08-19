@@ -1,8 +1,10 @@
 template:
   bootstrap: 5
-  light-switch: yes
   math-rendering: mathjax
+  light-switch: true
   bslib:
+    bootswatch: united
+    color_scheme: auto
     base_font:
       google: Oxygen
     heading_font:

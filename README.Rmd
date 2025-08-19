@@ -31,7 +31,7 @@ devtools::load_all(".", quiet = TRUE) # quiet = T for hiding macOS compiler warn
 ##### *Aravind, J^1^, Viay, D^2^, Manjunath Prasad, C. T.^2^ and Suman Roy^1^*
 
 1. Division of Germplasm Conservation, ICAR-National Bureau of Plant Genetic Resources, New Delhi.
-2. Division of Seed Science and Technology, ICAR-Indian Agricultural Research Institute
+2. Division of Seed Science and Technology, ICAR-Indian Agricultural Research Institute, New Delhi.
 
 ***
 [![minimal R version](https://img.shields.io/badge/R>%3D-3.5.0-6666ff.svg?logo=R)](https://cran.r-project.org/)
