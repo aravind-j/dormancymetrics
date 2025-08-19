@@ -15,7 +15,7 @@
 1.  Division of Germplasm Conservation, ICAR-National Bureau of Plant
     Genetic Resources, New Delhi.
 2.  Division of Seed Science and Technology, ICAR-Indian Agricultural
-    Research Institute
+    Research Institute, New Delhi.
 
 ------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ Size](https://img.shields.io/github/languages/code-size/aravind-j/dormancymetric
 [![Project Status:
 WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-maturing.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2025--08--17-yellowgreen.svg)](https://github.com/aravind-j/dormancymetrics/)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2025--08--19-yellowgreen.svg)](https://github.com/aravind-j/dormancymetrics/)
 <!-- [![Zenodo DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.zenodo.14889174.svg)](https://doi.org/10.5281/zenodo.14889174) -->
 [![Website -
 pkgdown](https://img.shields.io/website-up-down-green-red/https/aravind-j.github.io/dormancymetrics.svg)](https://aravind-j.github.io/dormancymetrics/)
@@ -103,7 +103,6 @@ news(package='dormancymetrics')
 [Documentation website](https://aravind-j.github.io/dormancymetrics/)
 
 <!--[Zenodo DOI](https://doi.org/10.5281/zenodo.14889174) -->
-
 <!--
 ## CRAN checks
 &#10;
@@ -170,8 +169,9 @@ citation("dormancymetrics")
 
     To cite package 'dormancymetrics' in publications use:
 
-      Aravind J, Vijay D, Manjunath Prasad C, Roy S (2025). _dormancymetrics: Curve Fitting for Seed
-      Dormancy Release_. R package version 0.0.0.9000, <https://github.com/aravind-j/dormancymetrics>.
+      Aravind J, Vijay D, Manjunath Prasad C, Roy S (2025).
+      _dormancymetrics: Curve Fitting for Seed Dormancy Release_. R package
+      version 0.0.0.9000, <https://github.com/aravind-j/dormancymetrics>.
 
     A BibTeX entry for LaTeX users is
 
