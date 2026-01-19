@@ -18,8 +18,7 @@ knitr::include_graphics("https://raw.githubusercontent.com/aravind-j/dormancymet
 -->
 
 ## `dormancymetrics`: Curve Fitting for Seed Dormancy Release
-<!-- <img src="https://raw.githubusercontent.com/aravind-j/dormancymetrics/master/inst/extdata/dormancymetrics.png" align="right" alt="logo" width="173" height = "200" style = "border: none; float: right;">
--->
+<img src="https://raw.githubusercontent.com/aravind-j/dormancymetrics/master/inst/extdata/dormancymetrics.png" align="right" alt="logo" width="173" height = "200" style = "border: none; float: right;">
 
 ```{r,echo = FALSE, message = FALSE}
 devtools::load_all(".", quiet = TRUE) # quiet = T for hiding macOS compiler warnings
