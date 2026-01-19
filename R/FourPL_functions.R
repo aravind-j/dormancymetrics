@@ -10,7 +10,7 @@
 #' @param c Parameter \mjseqn{c}.
 #' @param y0 Parameter \mjseqn{y_{0}}.
 #'
-#' @return The calculated response/dependent value value.
+#' @return The calculated response/dependent value.
 #'
 #' @export
 #'
