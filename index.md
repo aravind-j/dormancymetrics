@@ -22,7 +22,7 @@ Size](https://img.shields.io/github/languages/code-size/aravind-j/dormancymetric
 [![Project Status:
 WIP](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![lifecycle](https://lifecycle.r-lib.org/articles/figures/lifecycle-maturing.svg)](https://lifecycle.r-lib.org/articles/stages.html#maturing)
-[![Last-changedate](https://img.shields.io/badge/last%20change-2026--01--19-yellowgreen.svg)](https://github.com/aravind-j/dormancymetrics/)
+[![Last-changedate](https://img.shields.io/badge/last%20change-2026--02--27-yellowgreen.svg)](https://github.com/aravind-j/dormancymetrics/)
 [![Website -
 pkgdown](https://img.shields.io/website-up-down-green-red/https/aravind-j.github.io/dormancymetrics.svg)](https://aravind-j.github.io/dormancymetrics/)
 
